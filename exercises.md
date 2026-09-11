@@ -30,6 +30,22 @@ mỗi lần trung bình ~350 token đầu ra.
 trường hợp GPT-4o xứng đáng với chi phí và một trường hợp nên dùng mini:**
 > Workload không ảnh hưởng đến tỷ lệ chi phí giữa hai model; theo bảng giá đã cho, GPT-4o đắt hơn GPT-4o-mini khoảng 16,7 lần. Với workload trên, chi phí output khoảng $105/ngày cho GPT-4o và $6,3/ngày cho GPT-4o-mini. GPT-4o phù hợp với tác vụ phức tạp cần suy luận và độ chính xác cao, còn GPT-4o-mini phù hợp với tác vụ đơn giản, số lượng lớn như FAQ hoặc phân loại yêu cầu.
 
+> Chi tiết tính toán: 
+Ta tính lần lượt:
+
+- Số API calls/ngày: \(10{,}000 \times 3 = 30{,}000\)
+- Output token/ngày: \(30{,}000 \times 350 = 10{,}500{,}000\) token
+- Tương đương \(10{,}500\) đơn vị 1K token
+
+Chi phí output:
+
+$$ \text{GPT-4o} = 10{,}500 \times 0.010 = \$105/\text{ngày} $$ 
+$$ \text{GPT-4o-mini} = 10{,}500 \times 0.0006 = \$6.30/\text{ngày} $$
+
+Do đó:
+
+$$ \frac{105}{6.3}\approx 16.67 $$
+
 
 ---
 
@@ -86,7 +102,11 @@ thích 1–2 lựa chọn từ ngữ quan trọng trong prompt (ví dụ: vì sa
 **Trợ lý của bạn hiện có hạn chế lớn nhất là gì (ví dụ: history chỉ 3 lượt,
 không có bộ nhớ dài hạn, không kiểm duyệt nội dung...)? Đề xuất một cải
 thiện cụ thể và mô tả ngắn cách triển khai:**
-> Hạn chế lớn nhất của trợ lý hiện tại là chỉ lưu một số lượng nhỏ hội thoại gần nhất, nên có thể quên những thông tin hoặc yêu cầu trước đó. Một cải thiện cụ thể là cơ chế tóm tắt hội thoại: sau một số lượt chat, hệ thống có thể tóm tắt các thông tin quan trọng và lưu chúng vào database. Khi có câu hỏi mới, ứng dụng sẽ truy xuất phần thông tin liên quan và đưa vào context trước khi gọi API, giúp trợ lý duy trì được ngữ cảnh trong các cuộc hội thoại dài.
+> Hạn chế lớn nhất của trợ lý hiện tại là bộ nhớ ngắn hạn. Việc chỉ giữ lại vài lượt hội thoại gần nhất khiến bot dễ mất ngữ cảnh trong các cuộc trò chuyện dài; nhưng nếu đưa toàn bộ lịch sử vào thì sẽ vượt giới hạn context window và tốn kém chi phí token.
+
+> Đề xuất cải thiện: Triển khai bộ nhớ dài hạn bằng kiến trúc RAG (Retrieval-Augmented Generation) kết hợp với cơ sở dữ liệu véc-tơ (Vector Database).
+
+> Cách triển khai: Ứng dụng sẽ dùng mô hình Embedding để chuyển đổi các đoạn chat cũ thành vector và lưu trữ vào Vector DB. Khi người dùng đặt câu hỏi mới, hệ thống sẽ truy vấn top 3-5 đoạn hội thoại trong quá khứ có ý nghĩa liên quan nhất và chèn chúng vào system prompt trước khi gọi API. Giải pháp này giúp trợ lý có trí nhớ lớn hơn, giải quyết đúng trọng tâm mà vẫn tối ưu được chi phí đầu vào.
 ---
 
 ## Danh Sách Kiểm Tra Nộp Bài
@@ -94,4 +114,4 @@ thiện cụ thể và mô tả ngắn cách triển khai:**
 - [x] `python grade.py` — xem điểm tự động, mục tiêu ≥ 75/100
 - [x] Cả 4 checkpoint pytest đều pass
 - [x] Tất cả 9 câu trong file này đã được trả lời
-- [ ] Đã copy bài làm vào folder `solution/`, push lên fork và dán link trên trang bài Lab ở VLearn trước 23:59 ngày 11/09/2026
+- [x] Đã copy bài làm vào folder `solution/`, push lên fork và dán link trên trang bài Lab ở VLearn trước 23:59 ngày 11/09/2026
