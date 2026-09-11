@@ -33,9 +33,9 @@ trường hợp GPT-4o xứng đáng với chi phí và một trường hợp n�
 > Chi tiết tính toán: 
 Ta tính lần lượt:
 
-- Số API calls/ngày: \(10{,}000 \times 3 = 30{,}000\)
-- Output token/ngày: \(30{,}000 \times 350 = 10{,}500{,}000\) token
-- Tương đương \(10{,}500\) đơn vị 1K token
+- Số API calls/ngày: 10,000*3 = 30,000
+- Output token/ngày: 30,000*350 = 10,500,000 token
+- Tương đương 10,500 đơn vị 1K token
 
 Chi phí output:
 
